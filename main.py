@@ -10,6 +10,7 @@ from handlers.checklist import router as checklist_router
 from utils.storage import load_user_state, initialize_storage
 from services.weather_service import init_db, start_scheduler
 
+
 # =========================
 # Middleware для состояния пользователей
 # =========================

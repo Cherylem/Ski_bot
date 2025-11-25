@@ -8,6 +8,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import pytz
 from services.weather_plot import make_weather_plot
+from services.resorts_list import RESORTS
 
 # Используем абсолютные пути
 BASE_DIR = Path(__file__).parent.parent
@@ -18,12 +19,14 @@ PLOTS_DIR.mkdir(exist_ok=True)
 API_URL = "https://api.open-meteo.com/v1/forecast"
 
 # Курорты с координатами и часовым поясом
-RESORTS = {
-    "sheregesh": {"lat": 52.9235, "lon": 87.9576, "name": "Шерегеш", "elevations": [850], "timezone": "Asia/Novosibirsk"},
-    "elbrus": {"lat": 43.2837, "lon": 42.4408, "name": "Эльбрус", "elevations": [2300], "timezone": "Europe/Moscow"},
-    "rosa": {"lat": 43.6673, "lon": 40.3176, "name": "Роза Хутор", "elevations": [1170], "timezone": "Europe/Moscow"},
-    "dombay": {"lat": 43.5361, "lon": 41.5772, "name": "Домбай", "elevations": [1600], "timezone": "Europe/Moscow"},
-}
+
+
+# RESORTS = {
+#     "sheregesh": {"lat": 52.9235, "lon": 87.9576, "name": "Шерегеш", "elevations": [850], "timezone": "Asia/Novosibirsk"},
+#     "elbrus": {"lat": 43.2837, "lon": 42.4408, "name": "Эльбрус", "elevations": [2300], "timezone": "Europe/Moscow"},
+#     "rosa": {"lat": 43.6673, "lon": 40.3176, "name": "Роза Хутор", "elevations": [1170], "timezone": "Europe/Moscow"},
+#     "dombay": {"lat": 43.5361, "lon": 41.5772, "name": "Домбай", "elevations": [1600], "timezone": "Europe/Moscow"},
+# }
 
 logging.basicConfig(level=logging.INFO)
 MAX_MESSAGE_LENGTH = 4000  # Telegram limit

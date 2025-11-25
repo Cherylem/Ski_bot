@@ -9,17 +9,39 @@ router = Router()
 # Словарь для хранения message_id отправленных графиков
 user_graph_messages = {}
 
+RESORTS_INFO = {
+    "sheregesh": "📍 Кемеровская область\n📏 Высота: 1270м\n🎿 Трасс: 35\n❄️ Сезон: ноябрь-апрель\n",
+    "elbrus": "📍 Кабардино-Балкария\n📏 Высота: 3847м\n🎿 Трасс: 11\n❄️ Сезон: декабрь-апрель\n",
+    "dombay": "📍 Карачаево-Черкесия\n📏 Высота: 3168м\n🎿 Трасс: 12\n❄️ Сезон: декабрь-апрель\n",
+    "arkhyz": "📍 КЧР\n📏 Высота: 2860м\n🎿 Трасс: 14\n❄️ Сезон: декабрь-апрель\n",
+    "rosa": "📍 Сочи\n📏 Высота: 2320м\n🎿 Трасс: 102\n❄️ Крупнейший курорт России",
+    "gazprom": "📍 Сочи\n📏 Высота: 1500м\n🎿 Комфортный семейный курорт",
+    "gorki": "📍 Сочи\n📏 Высота: 960м\n🎿 Отличен для новичков",
+    "abzakovo": "📍 Башкирия\n📏 Высота: 800м\n🎿 Один из лучших на Урале",
+    "bannoe": "📍 Башкирия\n📏 Высота: 840м\n🎿 Современная инфраструктура",
+    "solnechnaya_dolina": "📍 Челябинская область\n📏 720м\n🎿 Спортивный курорт",
+    "holdomi": "📍 Хабаровский край\n📏 Высота: 560м\n🎿 Лучший Дальний Восток",
+    "yahroma": "📍 МО\n📏 Высота: 200м\n🎿 Несколько курортов в одном месте",
+}
 # =======================
 # Клавиатура выбора курортов
 # =======================
 def resorts_keyboard():
-    buttons = [
-        [InlineKeyboardButton(text="🏔️ Шерегеш", callback_data="resort_sheregesh")],
-        [InlineKeyboardButton(text="⛰️ Эльбрус", callback_data="resort_elbrus")],
-        [InlineKeyboardButton(text="🏂 Роза Хутор", callback_data="resort_rosa")],
-        [InlineKeyboardButton(text="🎿 Домбай", callback_data="resort_dombay")],
-        [InlineKeyboardButton(text="⬅️ Назад", callback_data="main_menu")]
-    ]
+    buttons = []
+
+    for resort_id, data in RESORTS.items():
+        buttons.append([
+            InlineKeyboardButton(
+                text=f"🏔️ {data['name']}",
+                callback_data=f"resort_{resort_id}"
+            )
+        ])
+
+    # Кнопка назад
+    buttons.append([
+        InlineKeyboardButton(text="⬅️ Назад", callback_data="main_menu")
+    ])
+
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 # =======================
@@ -39,42 +61,21 @@ async def show_resorts(callback: types.CallbackQuery):
 async def show_resort_info(callback: types.CallbackQuery):
     resort_id = callback.data.replace("resort_", "")
 
-    resort_info = {
-        "sheregesh": {
-            "name": "🏔️ Шерегеш",
-            "description": "📍 Кемеровская область\n📏 Высота: 1270м\n🎿 Трасс: 35\n❄️ Сезон: ноябрь-апрель\n\nЛучший курорт для фрирайда!",
-            "weather": "weather_sheregesh"
-        },
-        "elbrus": {
-            "name": "⛰️ Эльбрус",
-            "description": "📍 Кабардино-Балкария\n📏 Высота: 3847м\n🎿 Трасс: 11\n❄️ Сезон: декабрь-апрель\n\nСамый высокогорный курорт России!",
-            "weather": "weather_elbrus"
-        },
-        "rosa": {
-            "name": "🏂 Роза Хутор",
-            "description": "📍 Сочи\n📏 Высота: 2320м\n🎿 Трасс: 102\n❄️ Сезон: декабрь-апрель\n\nКрупнейший курорт России!",
-            "weather": "weather_rosa"
-        },
-        "dombay": {
-            "name": "🎿 Домбай",
-            "description": "📍 Карачаево-Черкесия\n📏 Высота: 3168м\n🎿 Трасс: 12\n❄️ Сезон: декабрь-апрель\n\nЖемчужина Кавказа!",
-            "weather": "weather_dombay"
-        }
-    }
-
-    resort = resort_info.get(resort_id)
-    if not resort:
+    if resort_id not in RESORTS:
         await callback.answer("❌ Курорт не найден")
         return
 
+    name = RESORTS[resort_id]["name"]
+    description = RESORTS_INFO.get(resort_id, "Описание скоро будет добавлено!")
+
     resort_kb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🌤️ Погода", callback_data=resort["weather"])],
+        [InlineKeyboardButton(text="🌤️ Погода", callback_data=f"weather_{resort_id}")],
         [InlineKeyboardButton(text="📞 Контакты", callback_data=f"contacts_{resort_id}")],
         [InlineKeyboardButton(text="⬅️ Назад к курортам", callback_data="main_resorts")]
     ])
 
     await callback.message.edit_text(
-        f"{resort['name']}\n\n{resort['description']}",
+        f"🏔️ {name}\n\n{description}",
         reply_markup=resort_kb
     )
 

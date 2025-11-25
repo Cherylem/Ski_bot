@@ -4,7 +4,7 @@ from utils.storage import save_user_state
 
 router = Router()
 
-# Пример базового шаблона списка
+# базовый список
 BASE_CATEGORIES = {
     "Одежда для катания 🏂": {
         "🧥 Куртка": False,
